@@ -69,6 +69,7 @@ root
 ├── .env                  # Environment variables
 ├── package.json           # Root package.json (optional)
 └── README.md
+```
 
 # Setup Instructions
 
