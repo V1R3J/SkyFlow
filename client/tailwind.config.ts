@@ -11,39 +11,24 @@ const config: Config = {
   	extend: {
   		colors: {
   			brand: {
-  				'50': '#F7F9FF',
-  				'100': '#EBF2FF',
-  				'200': '#D6E4FF',
-  				'300': '#B3CCFF',
-  				'400': '#7DA3FF',
-  				'500': '#5284FF',
-  				'600': '#2E65FE',
-  				'700': '#1A4DD6',
-  				'800': '#1840B5',
-  				'900': '#1A3694',
-  				bg: '#F7F9FF',
-  				'bg-secondary': '#EBF2FF',
-  				'bg-accent': '#D6E4FF',
-  				text: '#2E65FE',
-  				'text-dark': '#1A4DD6',
-  				'text-light': '#5284FF',
-  				DEFAULT: '#2E65FE'
+  				'100': '#4A90E2',
+  				DEFAULT: '#2563EB'
   			},
-  			red: '#FF7474',
-  			error: '#b80000',
-  			green: '#3DD9B3',
-  			blue: '#56B8FF',
-  			pink: '#EEA8FD',
-  			orange: '#F9AB72',
+  			red: '#EF4444',
+  			error: '#DC2626',
+  			green: '#10B981',
+  			blue: '#3B82F6',
+  			pink: '#EC4899',
+  			orange: '#F59E0B',
   			light: {
-  				'100': '#333F4E',
-  				'200': '#A3B2C7',
-  				'300': '#F2F5F9',
-  				'400': '#F2F4F8'
+  				'100': '#334155',
+  				'200': '#94A3B8',
+  				'300': '#F1F5F9',
+  				'400': '#F8FAFC'
   			},
   			dark: {
-  				'100': '#04050C',
-  				'200': '#131524'
+  				'100': '#0F172A',
+  				'200': '#1E293B'
   			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -87,14 +72,12 @@ const config: Config = {
   			}
   		},
   		fontFamily: {
-  			poppins: [
-  				'var(--font-poppins)'
-  			]
+  			poppins: ["var(--font-poppins)"]
   		},
   		boxShadow: {
-  			'drop-1': '0px 10px 30px 0px rgba(66, 71, 97, 0.1)',
-  			'drop-2': '0 8px 30px 0 rgba(46, 101, 254, 0.3)',
-  			'drop-3': '0 8px 30px 0 rgba(46, 101, 254, 0.1)'
+  			'drop-1': '0px 10px 30px 0px rgba(37, 99, 235, 0.1)',
+  			'drop-2': '0 8px 30px 0 rgba(59, 130, 246, 0.3)',
+  			'drop-3': '0 8px 30px 0 rgba(59, 130, 246, 0.1)'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

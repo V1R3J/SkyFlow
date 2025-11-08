@@ -1,6 +1,6 @@
 'use client'
 
-import { z } from 'zod'
+import { maxLength, minLength, set, z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
@@ -14,19 +14,26 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import Image from 'next/image'
+import { createAccount } from '@/lib/actions/users.actions'
+import OTPModal from './OTPModal'
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  email: z.string().email({
-    message: 'Please enter a valid email address.',
-  }),
-})
+const authFormSchema = (formType: FormType) => {
+  return z.object({
+    email: z.string().email(),
+    username: formType === 'sign-up' ? z.string().min(2).max(50) : z.string().optional(),
+  })
+}
 
 type FormType = 'sign-in' | 'sign-up'
 
 const AuthForm = ({ type }: { type: FormType }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [accountId, setAccountId] = useState(null)
+
+  const formSchema = authFormSchema(type)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,8 +42,21 @@ const AuthForm = ({ type }: { type: FormType }) => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true)
+    setErrorMessage('')
+
+    try {
+      const user = await createAccount({
+        username: values.username || '',
+        email: values.email,
+      })
+      setAccountId(user.accountId)
+    } catch {
+      setErrorMessage('Something went wrong. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleGoogleSignIn = () => {
@@ -60,7 +80,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
           </h1>
 
           {type === 'sign-up' && (
-            <div className="border border-gray-300 rounded-2xl p-8 sm:p-10 space-y-8 transition-all hover:border-gray-400">
+            <div className=" border-gray-300 border-[3px] rounded-2xl p-8 sm:p-10 space-y-8 transition-all hover:border-gray-400">
               <FormField
                 control={form.control}
                 name="username"
@@ -73,7 +93,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                       <FormControl>
                         <Input
                           placeholder="Enter your full name"
-                          className="border-0 bg-transparent text-xl sm:text-2xl px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
+                          className="border-0 bg-transparent text-lg sm:text-xl md:text-2xl px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 placeholder:text-lg placeholder:sm:text-xl placeholder:md:text-2xl"
                           {...field}
                         />
                       </FormControl>
@@ -96,7 +116,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                         <Input
                           type="email"
                           placeholder="Enter your email"
-                          className="border-0 bg-transparent text-xl sm:text-2xl px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
+                          className="border-0 bg-transparent text-lg sm:text-xl md:text-2xl px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 placeholder:text-lg placeholder:sm:text-xl placeholder:md:text-2xl"
                           {...field}
                         />
                       </FormControl>
@@ -110,12 +130,29 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
           <Button
             type="submit"
-            className="form-submit-button w-full bg-black hover:bg-gray-800 text-white font-medium py-6 text-base sm:text-lg rounded-xl transition-all duration-200 shadow-sm hover:shadow-md mt-8"
+            className="w-full form-submit-button text-lg sm:text-xl items-center justify-center hover:bg-blue-100 transition-colors"
+            disabled={isLoading}
           >
-            {type === 'sign-in' ? 'Sign In' : 'Sign Up'}
+            {isLoading ? (
+              <Image
+                src="/assets/icons/loader.svg"
+                alt="Loading"
+                width={24}
+                height={24}
+                className="animate-spin"
+              />
+            ) : type == 'sign-in' ? (
+              'Sign In'
+            ) : (
+              'Sign Up'
+            )}
           </Button>
+          {errorMessage && <p className="error-message">*{errorMessage}</p>}
         </form>
       </Form>
+      {/*OTP Verification Modal*/}
+
+      {accountId && <OTPModal email={form.getValues('email')} accountId={accountId} />}
 
       {/* Divider */}
       <div className="relative my-8">
@@ -132,10 +169,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
         type="button"
         onClick={handleGoogleSignIn}
         variant="outline"
-        className="w-full py-6 text-base sm:text-lg rounded-xl border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
+        className="w-full py-6 text-base sm:text-lg rounded-xl border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-3"
       >
-        <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-        </svg>
+        <img src="/assets/icons/google.svg" alt="Google logo" className="w-6 h-6" />
         Sign {type === 'sign-in' ? 'in' : 'up'} with Google
       </Button>
 

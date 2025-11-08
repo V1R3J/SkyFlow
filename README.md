@@ -21,11 +21,13 @@ A modern cloud-based file management system built with **Next.js** (frontend) an
 ## 🛠 Tech Stack
 
 ### Frontend
+
 - **Next.js** ![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=nextdotjs&logoColor=white)
 - **React** ![React](https://img.shields.io/badge/React-blue?style=for-the-badge&logo=react&logoColor=white)
 - **Tailwind CSS** ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-blue?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 ### Backend
+
 - **Node.js** ![Node.js](https://img.shields.io/badge/Node.js-green?style=for-the-badge&logo=node.js&logoColor=white)
 - **Express.js** ![Express](https://img.shields.io/badge/Express.js-black?style=for-the-badge&logo=express&logoColor=white)
 - **MongoDB** ![MongoDB](https://img.shields.io/badge/MongoDB-brightgreen?style=for-the-badge&logo=mongodb&logoColor=white)
@@ -34,6 +36,7 @@ A modern cloud-based file management system built with **Next.js** (frontend) an
 - **Cloud Storage** (AWS S3, GCP, Azure)
 
 ### Dev Tools
+
 - **ESLint** & **Prettier** for code quality
 - **Nodemon** for backend development
 - **Vercel** for frontend deployment
@@ -126,15 +129,22 @@ npm install
 npm run dev
 ```
 
-4. Open the app in your browser at http://localhost:3000
+4. Pull the latest changes from the main branch:
+
+```bash
+git pull origin main
+```
+
+5. Open the app in your browser at
+   [localhost](http://localhost:3000)
 
 ## 🔗 Additional Functionalities
 
-* **Search & Filter Files**: Easily locate files using search keywords.
-* **File Previews**: Preview images, PDFs, and documents before download.
-* **Cloud Sync**: Automatic sync to cloud storage (AWS S3 / GCP / Azure).
-* **Notifications**: Email or in-app notifications for shared files or folder updates.
-* **Activity Logs**: Track user activity and file modifications.
+- **Search & Filter Files**: Easily locate files using search keywords.
+- **File Previews**: Preview images, PDFs, and documents before download.
+- **Cloud Sync**: Automatic sync to cloud storage (AWS S3 / GCP / Azure).
+- **Notifications**: Email or in-app notifications for shared files or folder updates.
+- **Activity Logs**: Track user activity and file modifications.
 
 ## 📝 Contribution
 
@@ -158,4 +168,37 @@ git commit -m 'Add some feature'
 git push origin feature/YourFeature
 ```
 
-5. Open a Pull Request
+## 🗂️ Database Schema
+
+```mermaid
+erDiagram
+    FILES {
+        string $id
+        string name
+        string url
+        enum type
+        string bucketField
+        string accountId
+        string owner
+        string extension
+        int size
+        string[] users
+        datetime $createdAt
+        datetime $updatedAt
+    }
+
+    USERS {
+        string $id
+        string username
+        string email
+        string avatar
+        string accountId
+        string files
+        datetime $createdAt
+        datetime $updatedAt
+    }
+
+    %% Relationships
+    USERS ||--o{ FILES : "owns"
+    FILES }o--|| USERS : "shared_with"
+```
