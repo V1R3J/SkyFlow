@@ -1,6 +1,6 @@
 'use client'
 
-import { maxLength, minLength, set, z } from 'zod'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
@@ -63,18 +63,12 @@ const AuthForm = ({ type }: { type: FormType }) => {
     }
   }
 
-  const handleGoogleSignIn = () => {
-    console.log('Google Sign-In clicked')
-    // Add your Google OAuth logic here
-  }
-
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div className="w-full max-w-xl mx-auto px-4">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-semibold
-           mb-12 tracking-tight"
+            className="text-3xl lg:text-4xl font-semibold mb-8 tracking-tight"
             style={{
               fontFamily:
                 'SF Pro Display, -apple-system, system-ui, BlinkMacSystemFont, sans-serif',
@@ -83,25 +77,25 @@ const AuthForm = ({ type }: { type: FormType }) => {
             {type === 'sign-in' ? 'Sign In' : 'Sign Up'}
           </h1>
 
-          <div className=" border-gray-300 border-[3px] rounded-2xl p-8 sm:p-10 space-y-8 transition-all hover:border-gray-400">
+          <div className="border-gray-300 border-2 rounded-xl p-6 space-y-6 transition-all hover:border-gray-400">
             {type === 'sign-up' && (
               <FormField
                 control={form.control}
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="space-y-4 pb-8 border-b border-gray-200">
-                      <FormLabel className="text-xl sm:text-2xl font-medium text-gray-900">
+                    <div className="space-y-3 pb-6 border-b border-gray-200">
+                      <FormLabel className="text-lg font-medium text-gray-900">
                         Username
                       </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your full name"
-                          className="border-0 bg-transparent text-lg sm:text-xl md:text-2xl px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 placeholder:text-lg placeholder:sm:text-xl placeholder:md:text-2xl"
+                          className="border-0 bg-transparent text-base px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-base" />
+                      <FormMessage className="text-sm" />
                     </div>
                   </FormItem>
                 )}
@@ -113,19 +107,19 @@ const AuthForm = ({ type }: { type: FormType }) => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <div className="space-y-4">
-                    <FormLabel className="text-xl sm:text-2xl font-medium text-gray-900">
+                  <div className="space-y-3">
+                    <FormLabel className="text-lg font-medium text-gray-900">
                       Email
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="Enter your email"
-                        className="border-0 bg-transparent text-lg sm:text-xl md:text-2xl px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 placeholder:text-lg placeholder:sm:text-xl placeholder:md:text-2xl"
+                        className="border-0 bg-transparent text-base px-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="text-base" />
+                    <FormMessage className="text-sm" />
                   </div>
                 </FormItem>
               )}
@@ -134,15 +128,15 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
           <Button
             type="submit"
-            className="w-full form-submit-button text-lg sm:text-xl items-center justify-center hover:bg-blue-100 transition-colors"
+            className="w-full form-submit-button text-base items-center justify-center hover:bg-blue-100 transition-colors h-11"
             disabled={isLoading}
           >
             {isLoading ? (
               <Image
                 src="/assets/icons/loader.svg"
                 alt="Loading"
-                width={24}
-                height={24}
+                width={20}
+                height={20}
                 className="animate-spin"
               />
             ) : type == 'sign-in' ? (
@@ -151,16 +145,14 @@ const AuthForm = ({ type }: { type: FormType }) => {
               'Sign Up'
             )}
           </Button>
-          {errorMessage && <p className="error-message">*{errorMessage}</p>}
+          {errorMessage && <p className="error-message text-sm">*{errorMessage}</p>}
         </form>
       </Form>
-      {/*OTP Verification Modal*/}
 
       {accountId && <OTPModal email={form.getValues('email')} accountId={accountId} />}
 
-      {/* Account link */}
-      <div className="mt-8 text-center">
-        <p className="text-base text-gray-600">
+      <div className="mt-6 text-center">
+        <p className="text-sm text-gray-600">
           {type === 'sign-in' ? (
             <>
               Don't have an account?{' '}
