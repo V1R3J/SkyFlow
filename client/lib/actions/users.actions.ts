@@ -15,6 +15,8 @@ import { parseStringify } from '../utils'
 import { cookies } from 'next/headers'
 import { avatarPlaceholderUrl } from '@/constants'
 import { redirect } from 'next/navigation'
+import { errorMonitor } from 'events'
+import { parse } from 'path'
 
 const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient()
@@ -75,7 +77,6 @@ export const verifySecret = async ({
   try {
     const { account } = await createAdminClient()
 
-    // ✅ FIXED: Use createSession with the OTP (password is the OTP code)
     // For email token verification in Appwrite, createSession works with userId and secret
     const session = await account.createSession(accountId, password)
 
@@ -125,5 +126,21 @@ export const signOutUser = async () => {
     handleError(error, 'Failed to sign out')
   } finally {
     redirect('/sign-in')
+  }
+}
+
+//Sign-In
+export const signInUser = async ({ email }: { email: string }) => {
+  try {
+    const existingUser = await getUserByEmail(email)
+
+    //User exists, send OTP
+    if (existingUser) {
+      await sendEmailOTP({ email })
+      return parseStringify({ accountId: existingUser.accountId })
+    }
+    return parseStringify({ accountId: null, error: 'User not found' })
+  } catch (error) {
+    handleError(error, 'Failed to sign-In user')
   }
 }

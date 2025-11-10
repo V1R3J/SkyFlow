@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import Image from 'next/image'
-import { createAccount } from '@/lib/actions/users.actions'
+import { createAccount, signInUser } from '@/lib/actions/users.actions'
 import OTPModal from './OTPModal'
 
 const authFormSchema = (formType: FormType) => {
@@ -47,10 +47,14 @@ const AuthForm = ({ type }: { type: FormType }) => {
     setErrorMessage('')
 
     try {
-      const user = await createAccount({
-        username: values.username || '',
-        email: values.email,
-      })
+      const user =
+        type === 'sign-up'
+          ? await createAccount({
+              username: values.username || '',
+              email: values.email,
+            })
+          : await signInUser({ email: values.email })
+
       setAccountId(user.accountId)
     } catch {
       setErrorMessage('Something went wrong. Please try again.')
