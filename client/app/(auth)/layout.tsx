@@ -4,14 +4,15 @@ import Image from 'next/image'
 import React from 'react'
 import Lottie from 'lottie-react'
 import animationData from '@/public/lottie/auth-animation.json'
+import logo from '@/app/logo.svg'
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-slate-100">
       {/* Left section with illustration + animation */}
       <section className="bg-brand-bg p-10 hidden w-1/2 items-center justify-center lg:flex xl:w-2/5">
         <div className="flex max-h-[800px] max-w-[430px] flex-col justify-center space-y-12">
-          <Image src="/favicon.ico" alt="Logo" width={80} height={80} className="h-auto mt-10" />
+          <Image src={logo} alt="Logo" width={80} height={80} className="h-auto mt-10" />
           <div className="space-y-5 text-light-100 mt-10">
             <h1 className="text-[55px] font-semibold  tracking-tight">
               Manage your files the best way
@@ -32,7 +33,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <section className="flex flex-1 flex-col items-center bg-white p-4 py-10 lg:justify-center lg:p-10 lg:py-0">
         <div className="mb-16 lg:hidden">
           <Image
-            src="/favicon.ico"
+            src={logo}
             alt="Logo"
             width={82}
             height={82}
