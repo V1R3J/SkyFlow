@@ -30,6 +30,7 @@ const Header = ({
           </Button>
         </form>
       </div>
+      <FileUploader />
     </header>
   );
 };

@@ -85,9 +85,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                 render={({ field }) => (
                   <FormItem>
                     <div className="space-y-3 pb-6 border-b border-gray-200">
-                      <FormLabel className="text-lg font-medium text-gray-900">
-                        Username
-                      </FormLabel>
+                      <FormLabel className="text-lg font-medium text-gray-900">Username</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your full name"
@@ -108,9 +106,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
               render={({ field }) => (
                 <FormItem>
                   <div className="space-y-3">
-                    <FormLabel className="text-lg font-medium text-gray-900">
-                      Email
-                    </FormLabel>
+                    <FormLabel className="text-lg font-medium text-gray-900">Email</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
