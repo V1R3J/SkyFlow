@@ -1,28 +1,29 @@
-import React from "react";
-import Navbar from "@/components/Navbar";
-import MobileNavigation from "@/components/MobileNavigation";
-import Header from "@/components/Header";
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/actions/users.actions";
+import React from 'react'
+import Navbar from '@/components/Navbar'
+import MobileNavigation from '@/components/MobileNavigation'
+import Header from '@/components/Header'
+import { redirect } from 'next/navigation'
+import { getCurrentUser } from '@/lib/actions/users.actions'
+import { Toaster } from '@/components/ui/toaster'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const currentUser = await getCurrentUser();
-  if (!currentUser) return redirect('/sign-in');
+  const currentUser = await getCurrentUser()
+  if (!currentUser) return redirect('/sign-in')
 
   return (
     <main className="flex h-screen">
-      <Navbar {...currentUser}/>
+      <Navbar {...currentUser} />
 
       <section className="flex h-full flex-1 flex-col">
-        <MobileNavigation {...currentUser}/>
-        <Header />
+        <MobileNavigation {...currentUser} />
+        <Header userId={currentUser.$id} accountId={currentUser.accountId}/>
         <div className="main-content">{children}</div>
       </section>
 
-
+      <Toaster />
     </main>
-  );
-};
-export default Layout;
+  )
+}
+export default Layout

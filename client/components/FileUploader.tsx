@@ -1,11 +1,16 @@
 'use client'
 
-import React, { useCallback, useState } from 'react'
+import React, { MouseEvent, useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Upload, X, FileIcon, UploadCloudIcon } from 'lucide-react'
+import { UploadCloudIcon, XIcon } from 'lucide-react'
 import { cn, convertFileToUrl, getFileType } from '@/lib/utils'
 import { Button } from './ui/button'
 import Thumbnail from './Thumbnail'
+import Image from 'next/image'
+import { MAX_FILE_SIZE } from '@/constants'
+import { useToast } from '@/hooks/use-toast'
+import { uploadFile } from '@/lib/actions/file.actions'
+import { usePathname } from 'next/navigation'
 
 interface FileUploaderProps {
   ownerId?: string
@@ -14,18 +19,51 @@ interface FileUploaderProps {
 }
 
 const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
+  const { toast } = useToast()
   const [files, setFiles] = useState<File[]>([])
+  const path = usePathname()
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     // Upload files
     setFiles(acceptedFiles)
-  }, [])
+    const uploadPromises = acceptedFiles.map(async (file) => {
+      // Call your upload function here
+      // For example: return uploadFile({ file, ownerId, accountId, path: '/' })
+      if (file.size > MAX_FILE_SIZE) {
+        setFiles((prevfiles) => prevfiles.filter((f) => f.name !== file.name))
+        return toast({
+          title: 'File Too Large',
+          description: (
+            <p className="body-2 text-white">
+              <span className="font-semibold">{file.name}</span> exceeds the maximum file size of{' '}
+              {MAX_FILE_SIZE / (1024 * 1024)} MB.
+            </p>
+          ),
+          className: 'error-toast',
+        });
+      }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+      return uploadFile({ file, ownerId, accountId, path }).then((uploadedFile) =>  {
+        if (uploadedFile) {
+          setFiles((prevFiles) => prevFiles.filter((f) => f.name !== file.name))
+        }
+      })
+    })
+    await Promise.all(uploadPromises)
+  }, [ownerId, accountId, path,])
+
+  const { getRootProps, getInputProps} = useDropzone({
     onDrop,
     multiple: true,
   })
 
+  const handleRemoveFile = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
+    fileName: string
+  ) => {
+    e.stopPropagation()
+    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName))
+  }
   return (
     <div {...getRootProps()} className="cursor-pointer">
       <input {...getInputProps()} />
@@ -42,22 +80,26 @@ const FileUploader = ({ ownerId, accountId, className }: FileUploaderProps) => {
             return (
               <li key={`${file.name}-${index}`} className="uploader-preview-item">
                 <div className="flex items-center gap-3">
-                  <Thumbnail type={type} extension={extension} url={convertFileToUrl(file)}/>
+                  <Thumbnail type={type} extension={extension} url={convertFileToUrl(file)} />
+                  <div className="preview-item-name">
+                    {file.name}
+                    <Image
+                      src="/assets/icons/file-loader1.gif"
+                      width={150}
+                      height={40}
+                      alt="loading"
+                    />
+                  </div>
                 </div>
+
+                <XIcon
+                  className="text-gray-500 hover:text-red-500"
+                  onClick={(e) => handleRemoveFile(e, file.name)}
+                />
               </li>
             )
           })}
         </ul>
-      )}
-      {isDragActive ? (
-        <p className="text-blue-500">Drop the files here...</p>
-      ) : (
-        <div>
-          <p className="text-gray-700 font-medium mb-2">
-            Drag & drop files here, or click to select
-          </p>
-          <p className="text-gray-500 text-sm">Support for multiple files</p>
-        </div>
       )}
     </div>
   )
